@@ -1,6 +1,7 @@
 import express, { type Express } from 'express';
 import type { DatabaseSync } from 'node:sqlite';
 import { login, logout, me, requireAuth, requireRole } from './auth.js';
+import { listOrders } from './orders.js';
 
 export function createApp(db: DatabaseSync): Express {
   const app = express();
@@ -14,6 +15,15 @@ export function createApp(db: DatabaseSync): Express {
   app.post('/api/login', (req, res) => login(db, req, res));
   app.post('/api/logout', (req, res) => logout(req, res));
   app.get('/api/me', requireAuth(db), (req, res) => me(req, res));
+
+  app.get('/api/orders', requireAuth(db), (req, res) => {
+    const result = listOrders(db, req.query);
+    if (!result.ok) {
+      res.status(400).json({ error: result.error });
+      return;
+    }
+    res.json(result.page);
+  });
 
   app.delete('/api/orders/:id', requireAuth(db), requireRole('admin'), (req, res) => {
     const id = req.params.id;

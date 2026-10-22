@@ -54,4 +54,12 @@ The browser stores the session in an httpOnly, SameSite=Lax cookie named `sarh_s
 
 `POST /api/login` with `{ "email", "password" }` sets the cookie and returns the user, not the token. `POST /api/logout` clears it. `GET /api/me` returns the current user.
 
-Seeded passwords are in the table above. The orders list and the duplicate-order proof come next. The product question and `DECISIONS.md` come with the write-up.
+Seeded passwords are in the table above.
+
+## Orders list
+
+`GET /api/orders` is authenticated. It never returns the full table. Each response is at most 50 rows:
+
+`q` searches customer name and email, `status` is one of the four statuses, `sort` is `created_at` or `total`, `dir` is `asc` or `desc`, and `cursor` is the `nextCursor` from the previous page. The response is `{ orders, nextCursor, total }`. A request cannot raise the page size.
+
+The duplicate-order proof, the product question, and `DECISIONS.md` come next.

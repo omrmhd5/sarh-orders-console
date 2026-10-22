@@ -25,6 +25,12 @@ const STATUSES = ['new', 'confirmed', 'fulfilled', 'cancelled'] as const;
 const ANCHOR_MS = Date.parse('2026-10-22T09:00:00.000Z');
 const SPAN_MS = 120 * 24 * 60 * 60 * 1000;
 
+function mix(n: number): number {
+  let x = Math.imul(n + 1, 0x45d9f3b);
+  x = Math.imul(x ^ (x >>> 16), 0x45d9f3b);
+  return (x ^ (x >>> 16)) >>> 0;
+}
+
 function statusFor(index: number): (typeof STATUSES)[number] {
   const bucket = index % 20;
   if (bucket === 0) return 'cancelled';
@@ -72,8 +78,8 @@ insertUser.run(
 
 const started = Date.now();
 for (let i = 0; i < ORDER_COUNT; i += 1) {
-  const first = FIRST_NAMES[i % FIRST_NAMES.length]!;
-  const family = FAMILY_NAMES[(i * 3) % FAMILY_NAMES.length]!;
+  const first = FIRST_NAMES[mix(i) % FIRST_NAMES.length]!;
+  const family = FAMILY_NAMES[mix(i + 17) % FAMILY_NAMES.length]!;
   const orderId = `ord_${String(i + 1).padStart(6, '0')}`;
   const itemCount = (i % 5) + 1;
   let total = 0;
