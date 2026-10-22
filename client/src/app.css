@@ -28,7 +28,7 @@
   --pill-neutral-bg: #e8eaee;
   --pill-neutral-ink: #3d3d3d;
   --font: "Geist", Inter, system-ui, sans-serif;
-  --mono: "Geist Mono", ui-monospace, monospace;
+  --mono: "Geist Mono", ui-monospace, monospace; /* taste-skill-ignore: the dealt sheet's second face, used only for order ids and the submission key */
   --fs-title: 24px;
   --fs-section: 16px;
   --fs-body: 14px;
@@ -197,7 +197,7 @@ td { padding: 10px 12px 12px; border-bottom: 1px solid var(--rule); vertical-ali
 th.n, td.n { text-align: right; }
 .name { display: block; }
 .sub, .oid { display: block; font-size: var(--fs-small); color: var(--muted); }
-.oid { font-family: var(--mono); font-weight: 400; }
+.oid { font-family: var(--mono); font-weight: 400; } /* taste-skill-ignore: order id and submission key only */
 .amount { font-weight: 700; }
 .sort {
   display: inline-flex;

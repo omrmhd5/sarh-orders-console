@@ -72,7 +72,7 @@ The body is `customerName`, `customerEmail`, `items` (1 to 5 of `name`, `quantit
 
 `npm test` logs in as the agent, posts the same order twice in parallel, and checks that both responses are the same order and that the table holds one row for that key. A second key creates a second order. It also rejects a token signed with the old hardcoded secret, ignores `?token=`, refuses an agent delete, and lets an admin delete.
 
-To see the rapid-filter behaviour by hand: sign in, open the network panel, throttle the connection, and switch All → New → Fulfilled quickly. The table must end on Fulfilled.
+To see the rapid-filter behaviour by hand: sign in, open the network panel, throttle the connection, and switch All → New → Fulfilled quickly. The table must end on Fulfilled. `proof/list-new.png` is the New filter, `proof/list-fulfilled.png` is the list after that switch, and `proof/duplicate-proof.txt` is the `npm test` log.
 
 ## Product question
 
