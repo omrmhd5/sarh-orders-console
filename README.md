@@ -23,8 +23,8 @@ The client runs at http://localhost:5173 and proxies `/api` to the API on http:/
 
 `npm run seed` deletes `data/orders.sqlite` and writes it again. The file is gitignored. The load is 50,000 orders, each with 1–5 line items, plus two users:
 
-| Email | Password | Role |
-| --- | --- | --- |
+| Email           | Password       | Role  |
+| --------------- | -------------- | ----- |
 | admin@sarh.test | SarhAdmin-2026 | admin |
 | agent@sarh.test | SarhAgent-2026 | agent |
 

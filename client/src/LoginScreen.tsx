@@ -6,6 +6,11 @@ type LoginProps = {
   onSuccess: (user: SessionUser) => void;
 };
 
+const DEMO_ACCOUNTS = [
+  { role: 'Agent', email: 'agent@sarh.test', password: 'SarhAgent-2026' },
+  { role: 'Admin', email: 'admin@sarh.test', password: 'SarhAdmin-2026' },
+] as const;
+
 export function LoginScreen({ onSuccess }: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -70,6 +75,33 @@ export function LoginScreen({ onSuccess }: LoginProps) {
         <button className="btn primary" type="submit" disabled={pending}>
           {pending ? 'Signing in' : 'Sign in'}
         </button>
+        <div className="login-demo">
+          <p className="login-demo-label">Demo logins</p>
+          <ul className="login-demo-list">
+            {DEMO_ACCOUNTS.map((account) => (
+              <li key={account.role}>
+                <button
+                  type="button"
+                  className="login-demo-row"
+                  disabled={pending}
+                  onClick={() => {
+                    setEmail(account.email);
+                    setPassword(account.password);
+                    setError(null);
+                  }}
+                >
+                  <span className="login-demo-role">{account.role}</span>
+                  <span className="login-demo-creds">
+                    {account.email}
+                    <span className="login-demo-sep" aria-hidden="true">·</span>
+                    {account.password}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <p className="login-demo-hint">Tap a row to fill the form.</p>
+        </div>
       </form>
     </main>
   );
