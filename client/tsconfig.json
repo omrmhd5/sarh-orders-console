@@ -14,5 +14,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "../shared/requestGate.ts"]
+  "include": ["src", "../shared/requestGate.ts", "../shared/orderInput.ts"]
 }

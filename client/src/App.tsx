@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from './api';
+import { CreateOrder } from './CreateOrder';
 import { LoginScreen } from './LoginScreen';
 import { OrdersScreen } from './OrdersScreen';
 import { Shell } from './Shell';
@@ -7,6 +8,7 @@ import type { SessionUser } from './types';
 
 export function App() {
   const [user, setUser] = useState<SessionUser | null | undefined>(undefined);
+  const [view, setView] = useState<'list' | 'create'>('list');
   const onUnauthorized = useCallback(() => setUser(null), []);
 
   useEffect(() => {
@@ -42,16 +44,22 @@ export function App() {
   return (
     <Shell
       user={user}
-      title="Orders"
-      sub="Search before you register a phone order."
+      title={view === 'list' ? 'Orders' : 'Phone order'}
+      sub={view === 'list' ? 'Search before you register a phone order.' : 'One submission is one order.'}
       onLogout={onLogout}
       action={
-        <button className="btn primary" type="button" onClick={() => undefined}>
-          Register phone order
-        </button>
+        view === 'list' ? (
+          <button className="btn primary" type="button" onClick={() => setView('create')}>
+            Register phone order
+          </button>
+        ) : (
+          <button className="btn" type="button" onClick={() => setView('list')}>
+            Back to orders
+          </button>
+        )
       }
     >
-      <OrdersScreen onUnauthorized={onUnauthorized} />
+      {view === 'list' ? <OrdersScreen onUnauthorized={onUnauthorized} /> : <CreateOrder />}
     </Shell>
   );
 }

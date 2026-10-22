@@ -1,6 +1,7 @@
 import express, { type Express } from 'express';
 import type { DatabaseSync } from 'node:sqlite';
 import { login, logout, me, requireAuth, requireRole } from './auth.js';
+import { createOrder, readIdempotencyKey } from './createOrder.js';
 import { listOrders } from './orders.js';
 
 export function createApp(db: DatabaseSync): Express {
@@ -23,6 +24,30 @@ export function createApp(db: DatabaseSync): Express {
       return;
     }
     res.json(result.page);
+  });
+
+  app.post('/api/orders', requireAuth(db), (req, res) => {
+    const key = readIdempotencyKey(req.get('idempotency-key'));
+    if (!key) {
+      res.status(400).json({ error: 'Send an Idempotency-Key for this submission' });
+      return;
+    }
+    const user = req.user;
+    if (!user) {
+      res.status(401).json({ error: 'no token' });
+      return;
+    }
+    try {
+      const result = createOrder(db, key, req.body, user.id);
+      if (!result.ok) {
+        res.status(400).json({ errors: result.errors });
+        return;
+      }
+      res.status(result.replayed ? 200 : 201).json({ order: result.order, replayed: result.replayed });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'The order could not be saved' });
+    }
   });
 
   app.delete('/api/orders/:id', requireAuth(db), requireRole('admin'), (req, res) => {

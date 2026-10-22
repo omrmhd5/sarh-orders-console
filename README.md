@@ -62,4 +62,10 @@ Seeded passwords are in the table above.
 
 `q` searches customer name and email, `status` is one of the four statuses, `sort` is `created_at` or `total`, `dir` is `asc` or `desc`, and `cursor` is the `nextCursor` from the previous page. The response is `{ orders, nextCursor, total }`. A request cannot raise the page size.
 
+## Create an order
+
+`POST /api/orders` requires the session cookie and an `Idempotency-Key` header (a UUID, one per submission). The same key, including two requests in flight together, inserts one row. The unique index on `orders.idempotency_key` is the guarantee. The button being disabled is only a convenience.
+
+The body is `customerName`, `customerEmail`, `items` (1 to 5 of `name`, `quantity`, `unitHalalas`), and `totalHalalas`. Client and server both check the fields. The server adds the line items again and rejects the request when the amount does not match. A new order is status `new`. A repeated key returns the original order with `replayed: true` and does not write a second row.
+
 The duplicate-order proof, the product question, and `DECISIONS.md` come next.

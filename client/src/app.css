@@ -267,6 +267,22 @@ th[aria-sort="ascending"] .sort::after { border-bottom: 5px solid currentColor; 
 .login-panel .field { display: grid; gap: 6px; font-weight: 500; }
 .login-panel .btn { width: 100%; }
 
+.create { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: start; }
+.order-form, .ticket, .ticket-result { display: grid; gap: 12px; align-content: start; }
+.field { display: grid; gap: 6px; font-weight: 500; }
+.item-block { display: grid; gap: 12px; }
+.item-row { display: grid; grid-template-columns: minmax(0, 1.4fr) 72px 120px; gap: 12px; align-items: end; }
+.ticket, .ticket-result {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 16px;
+}
+.item-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.item-list li { display: flex; justify-content: space-between; gap: 12px; }
+.ticket .amount, .ticket-result .amount { font-size: 24px; font-weight: 700; }
+.ticket-result h2 { font-size: 16px; font-weight: 500; }
+
 @media (max-width: 860px) {
   .app { grid-template-columns: minmax(0, 1fr); }
   .sidebar {
@@ -312,6 +328,8 @@ th[aria-sort="ascending"] .sort::after { border-bottom: 5px solid currentColor; 
   td:nth-child(3) { grid-column: 2; grid-row: 1; text-align: right; }
   td:nth-child(4) { grid-column: 2; grid-row: 2; text-align: right; }
   td:nth-child(2) { grid-column: 1 / -1; grid-row: 3; margin-top: 6px; }
+  .create { grid-template-columns: minmax(0, 1fr); }
+  .item-row { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (prefers-reduced-motion: reduce) {
