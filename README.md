@@ -68,4 +68,8 @@ Seeded passwords are in the table above.
 
 The body is `customerName`, `customerEmail`, `items` (1 to 5 of `name`, `quantity`, `unitHalalas`), and `totalHalalas`. Client and server both check the fields. The server adds the line items again and rejects the request when the amount does not match. A new order is status `new`. A repeated key returns the original order with `replayed: true` and does not write a second row.
 
-The duplicate-order proof, the product question, and `DECISIONS.md` come next.
+## Proof
+
+`npm test` logs in as the agent, posts the same order twice in parallel, and checks that both responses are the same order and that the table holds one row for that key. A second key creates a second order. It also rejects a token signed with the old hardcoded secret, ignores `?token=`, refuses an agent delete, and lets an admin delete.
+
+The product question and `DECISIONS.md` come next.
