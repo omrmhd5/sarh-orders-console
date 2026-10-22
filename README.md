@@ -43,7 +43,7 @@ Indexes the list query is built for:
 
 The contractor middleware was the starting point for `/api/orders`. These are the problems in it, and what the server does instead.
 
-- `jwt.decode` never checks the signature or `exp`, so anyone can invent `{ sub, role }`. Login now signs with `jwt.verify` restricted to HS256, and the token expires after 8 hours.
+- `jwt.decode` never checks the signature or `exp`, so anyone can invent `{ sub, role }`. Login now signs with `jwt.sign`, and `requireAuth` checks the cookie with `jwt.verify` restricted to HS256. The token expires after 8 hours.
 - The secret `sarh-secret-2026` was in source. `JWT_SECRET` comes from the environment, and the process refuses to boot if it is missing or still that string.
 - The token was also read from `?token=`, which leaks into logs, history, and Referer. That parameter is ignored.
 - `Authorization` was split on a space and the second piece was trusted for any scheme. The API does not accept a bearer header.
@@ -72,4 +72,24 @@ The body is `customerName`, `customerEmail`, `items` (1 to 5 of `name`, `quantit
 
 `npm test` logs in as the agent, posts the same order twice in parallel, and checks that both responses are the same order and that the table holds one row for that key. A second key creates a second order. It also rejects a token signed with the old hardcoded secret, ignores `?token=`, refuses an agent delete, and lets an admin delete.
 
-The product question and `DECISIONS.md` come next.
+To see the rapid-filter behaviour by hand: sign in, open the network panel, throttle the connection, and switch All → New → Fulfilled quickly. The table must end on Fulfilled.
+
+## Product question
+
+The operations lead asks for a button, “Delete all cancelled orders.”
+
+I would ask why those orders should disappear, who still needs them (finance, a refund, a customer dispute), and whether the action has to be undoable.
+If she cannot answer, I would not build the button.
+I would offer an admin view that hides cancelled orders from the working queue and keeps the rows.
+
+## What I skipped and why
+
+`SCALE.md` is out of scope for this application. The senior-only design memo was not part of the brief I was given.
+
+I did not build the optional slow stats API or the optimistic create. Both are allowed only inside the time budget, and the list, the duplicate proof, and the auth review were the parts I wanted finished and explainable.
+
+No Docker, no deployment, and no component library. The brief says the app runs locally and does not need those.
+
+The client does not virtualise rows. It never receives more than 50 at a time, then asks for the next cursor. A virtual list would still need a page from the server, so the cursor is the part that keeps 50,000 rows off the wire.
+
+There is no “delete all cancelled orders” button. The single-order delete exists only so the admin check can be tested on the server.
