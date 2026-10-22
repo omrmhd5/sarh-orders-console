@@ -58,7 +58,7 @@ Seeded passwords are in the table above.
 
 ## Orders list
 
-`GET /api/orders` is authenticated. It never returns the full table. Each response is at most 50 rows:
+`GET /api/orders` is authenticated. It never returns the full table. The client aborts the request already in flight when the search, status, or sort changes, and it ignores a response that is no longer the latest one. Each response is at most 50 rows:
 
 `q` searches customer name and email, `status` is one of the four statuses, `sort` is `created_at` or `total`, `dir` is `asc` or `desc`, and `cursor` is the `nextCursor` from the previous page. The response is `{ orders, nextCursor, total }`. A request cannot raise the page size.
 

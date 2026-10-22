@@ -1,27 +1,57 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { api } from './api';
+import { LoginScreen } from './LoginScreen';
+import { OrdersScreen } from './OrdersScreen';
+import { Shell } from './Shell';
+import type { SessionUser } from './types';
 
 export function App() {
-  const [health, setHealth] = useState('checking');
+  const [user, setUser] = useState<SessionUser | null | undefined>(undefined);
+  const onUnauthorized = useCallback(() => setUser(null), []);
 
   useEffect(() => {
-    const controller = new AbortController();
-    fetch('/api/health', { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) throw new Error(String(response.status));
-        return response.json() as Promise<{ ok: boolean }>;
+    let gone = false;
+    api<{ user: SessionUser }>('/api/me')
+      .then((body) => {
+        if (!gone) setUser(body.user);
       })
-      .then((body) => setHealth(body.ok ? 'API is up' : 'API responded without ok'))
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
-        setHealth('API is not reachable');
+      .catch(() => {
+        if (!gone) setUser(null);
       });
-    return () => controller.abort();
+    return () => {
+      gone = true;
+    };
   }, []);
 
+  async function onLogout() {
+    await api('/api/logout', { method: 'POST' }).catch(() => undefined);
+    setUser(null);
+  }
+
+  if (user === undefined) {
+    return (
+      <main className="login">
+        <h1>SARH Orders</h1>
+        <p className="sub">Checking the session</p>
+      </main>
+    );
+  }
+
+  if (!user) return <LoginScreen onSuccess={setUser} />;
+
   return (
-    <main>
-      <h1>SARH Orders</h1>
-      <p>{health}</p>
-    </main>
+    <Shell
+      user={user}
+      title="Orders"
+      sub="Search before you register a phone order."
+      onLogout={onLogout}
+      action={
+        <button className="btn primary" type="button" onClick={() => undefined}>
+          Register phone order
+        </button>
+      }
+    >
+      <OrdersScreen onUnauthorized={onUnauthorized} />
+    </Shell>
   );
 }
