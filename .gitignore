@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+data/*.sqlite
+data/*.sqlite-*
+.taste-skill/
+*.log
+SARH_FullStack_Take-Home_Test_v2.pdf
